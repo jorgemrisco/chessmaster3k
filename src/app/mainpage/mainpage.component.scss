@@ -1,0 +1,23 @@
+.mainpage {
+  display: flex;
+  flex-direction: column; /* Stack the header and board container vertically */
+  align-items: center; /* Center the header horizontally */
+  padding: 0; /* Remove extra padding */
+  margin: 0; /* Remove any default margin */
+  height: 100vh; /* Full viewport height */
+  box-sizing: border-box; /* Include padding/border in calculations */
+}
+
+.board-container {
+  display: flex;
+  justify-content: center; /* Horizontally center the boards */
+  align-items: center; /* Vertically center the boards */
+  height: calc(100vh - 100px); /* Subtract the header height */
+  gap: 40px; /* Add spacing between the boards */
+}
+
+.board {
+  width: 400px;
+  height: 400px;
+  box-sizing: border-box; 
+}

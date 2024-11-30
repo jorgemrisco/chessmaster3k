@@ -4,10 +4,10 @@ import { MainpageComponent } from './mainpage/mainpage.component';
 import { BoardComponent } from './board/board.component';
 
 const routes: Routes = [
-  { path: 'mainpage', component: MainpageComponent },
-  { path: 'iframepage', component: BoardComponent },
+  { path: 'mainpage', component: MainpageComponent }, // Main page route
+  { path: 'iframepage', component: BoardComponent }, // Iframe page route
   { path: '', redirectTo: '/mainpage', pathMatch: 'full' },
-  { path: '**', redirectTo: '/mainpage' },
+  { path: '**', redirectTo: '/mainpage' }, // Fallback for invalid routes
 ];
 
 @NgModule({
