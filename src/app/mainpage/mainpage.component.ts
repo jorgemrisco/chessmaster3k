@@ -33,7 +33,7 @@ export class MainpageComponent implements OnInit {
     const message = this.chessMessageService.parseMessage(event);
 
     const target =
-      event.source === this.whiteBoard.contentWindow
+      event.source === this.whiteBoard?.contentWindow
         ? this.blackBoard
         : this.whiteBoard;
 
