@@ -15,10 +15,9 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent implements OnInit, AfterViewInit {
   @ViewChild('board', { static: false }) board!: NgxChessBoardView;
-
-  @Input() isBlack: boolean = false;
+  @Input() isBlack = false;
 
   constructor(
     private chessMessageService: ChessMessageService,
@@ -27,6 +26,16 @@ export class BoardComponent implements OnInit {
 
   ngOnInit(): void {
     window.addEventListener('message', this.handleMessage.bind(this));
+
+    this.route.queryParams.subscribe((params) => {
+      this.isBlack = params['isBlack'] === 'true';
+    });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.isBlack) {
+      this.board.reverse();
+    }
   }
 
   /**
@@ -38,6 +47,10 @@ export class BoardComponent implements OnInit {
 
     if (message?.type === MessageType.UPDATE) {
       this.board.setFEN(message.fen);
+
+      if (this.isBlack) {
+        this.board.reverse();
+      }
     }
   }
 
