@@ -16,4 +16,10 @@ export class ChessMessageService {
   parseMessage(event: MessageEvent): ChessMessage {
     return event.data as ChessMessage;
   }
+
+  isItWhitePlayerTurn(fen: string) {
+    const fields = fen.split(' ');
+
+    return fields[1] === 'w';
+  }
 }

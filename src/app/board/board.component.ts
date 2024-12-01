@@ -18,6 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 export class BoardComponent implements OnInit, AfterViewInit {
   @ViewChild('board', { static: false }) board!: NgxChessBoardView;
   @Input() isBlack = false;
+  private isItWhitePlayerTurn = true;
   isMyTurn = true;
 
   constructor(
@@ -35,8 +36,8 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.isBlack) {
+      this.isMyTurn = false;
       this.board.reverse();
-      this.isMyTurn = false; // white starts
     }
   }
 
@@ -49,7 +50,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     if (message.type === MessageType.UPDATE) {
       this.board.setFEN(message.fen);
-      this.isMyTurn = !this.isMyTurn;
+      this.toggleBoard(message.fen);
 
       if (this.isBlack) {
         this.board.reverse();
@@ -69,8 +70,16 @@ export class BoardComponent implements OnInit, AfterViewInit {
       };
 
       this.chessMessageService.sendMessage(window.parent, message);
-
-      this.isMyTurn = !this.isMyTurn;
+      this.toggleBoard(message.fen);
     }
+  }
+
+  private toggleBoard(fen: string) {
+    this.isItWhitePlayerTurn =
+      this.chessMessageService.isItWhitePlayerTurn(fen);
+
+    this.isMyTurn =
+      (this.isBlack && !this.isItWhitePlayerTurn) ||
+      (!this.isBlack && this.isItWhitePlayerTurn);
   }
 }

@@ -1,5 +1,6 @@
 <div class="mainpage">
   <h1>Chessmaster3k</h1>
+  <div class="fen-display">FEN: {{currentFen}}</div>
   <div class="board-container">
     <!-- White Board -->
     <iframe
@@ -7,7 +8,6 @@
       src="/iframepage?isBlack=false"
       frameborder="0"
       class="board"
-      [ngClass]="{ disabled: !isWhiteTurn }"
     ></iframe>
 
     <!-- Black Board -->
@@ -16,7 +16,16 @@
       src="/iframepage?isBlack=true"
       frameborder="0"
       class="board"
-      [ngClass]="{ disabled: isWhiteTurn }"
     ></iframe>
+  </div>
+  <button (click)="resetGame()">Create new game</button>
+   <div class="fen-input-container">
+    <input
+      type="text"
+      placeholder="Enter FEN"
+      class="fen-input"
+      [(ngModel)]="customFen"
+    />
+    <button (click)="setCustomFEN()">Set Custom FEN</button>
   </div>
 </div>

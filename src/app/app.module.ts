@@ -6,10 +6,16 @@ import { AppComponent } from './app.component';
 import { MainpageComponent } from './mainpage/mainpage.component';
 import { BoardComponent } from './board/board.component';
 import { NgxChessBoardModule } from 'ngx-chess-board';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent, MainpageComponent, BoardComponent],
-  imports: [BrowserModule, AppRoutingModule, NgxChessBoardModule.forRoot()],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    NgxChessBoardModule.forRoot(),
+    FormsModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

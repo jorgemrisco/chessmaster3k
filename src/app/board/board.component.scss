@@ -2,3 +2,8 @@ ngx-chess-board {
   display: block;
   margin: 0 auto;
 }
+
+.disabled{
+  pointer-events: none;
+  opacity: 0.5;
+}

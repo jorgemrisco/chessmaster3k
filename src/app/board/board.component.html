@@ -7,4 +7,5 @@
   (moveChange)="onMove()"
   [darkDisabled]="!isBlack && !isMyTurn"
   [lightDisabled]="isBlack && !isMyTurn"
+  [ngClass]="{disabled: !isMyTurn}"
 ></ngx-chess-board>
