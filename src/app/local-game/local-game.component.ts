@@ -44,26 +44,6 @@ export class LocalGameComponent implements OnInit {
    * As a parent, receives the MOVE Message and sends an UPDATE message to the other board
    * @param event
    */
-  handleMessage(event: MessageEvent) {
-    const message = this.chessMessageService.parseMessage(event);
-    if (message.type === MessageType.MOVE) {
-      const target =
-        event.source === this.whiteBoard?.contentWindow
-          ? this.blackBoard
-          : this.whiteBoard;
-
-      this.chessMessageService.sendMessage(target?.contentWindow, {
-        fen: message.fen,
-        type: MessageType.UPDATE,
-      });
-
-      this.currentFen = message.fen;
-      this.saveGameState(this.currentFen);
-      if (!this.checkForMate(message)) {
-        this.finishTurn();
-      }
-    }
-  }
 
   resetGame() {
     this.chessMessageService.sendMessage(this.whiteBoard?.contentWindow, {
@@ -92,7 +72,29 @@ export class LocalGameComponent implements OnInit {
         '*'
       );
     } else {
+      console.log('invalid');
       alert('Invalid FEN. Please enter a valid FEN string.');
+    }
+  }
+
+  private handleMessage(event: MessageEvent) {
+    const message = this.chessMessageService.parseMessage(event);
+    if (message.type === MessageType.MOVE) {
+      const target =
+        event.source === this.whiteBoard?.contentWindow
+          ? this.blackBoard
+          : this.whiteBoard;
+
+      this.chessMessageService.sendMessage(target?.contentWindow, {
+        fen: message.fen,
+        type: MessageType.UPDATE,
+      });
+
+      this.currentFen = message.fen;
+      this.saveGameState(this.currentFen);
+      if (!this.checkForMate(message)) {
+        this.finishTurn();
+      }
     }
   }
 
