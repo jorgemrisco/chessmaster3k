@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NgxChessBoardView } from 'ngx-chess-board';
-import { ChessMessage, MessageType } from './board.model';
+import { ChessMessage, MessageType } from '../services/message.model';
 import { ChessMessageService } from '../services/chess-message.service';
 import { ActivatedRoute } from '@angular/router';
 
@@ -18,6 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 export class BoardComponent implements OnInit, AfterViewInit {
   @ViewChild('board', { static: false }) board!: NgxChessBoardView;
   @Input() isBlack = false;
+  isMyTurn = true;
 
   constructor(
     private chessMessageService: ChessMessageService,
@@ -35,6 +36,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (this.isBlack) {
       this.board.reverse();
+      this.isMyTurn = false; // white starts
     }
   }
 
@@ -45,8 +47,9 @@ export class BoardComponent implements OnInit, AfterViewInit {
   handleMessage(event: MessageEvent) {
     const message: ChessMessage = event.data;
 
-    if (message?.type === MessageType.UPDATE) {
+    if (message.type === MessageType.UPDATE) {
       this.board.setFEN(message.fen);
+      this.isMyTurn = !this.isMyTurn;
 
       if (this.isBlack) {
         this.board.reverse();
@@ -58,12 +61,16 @@ export class BoardComponent implements OnInit, AfterViewInit {
    * Sends a MOVE message to the other board
    */
   onMove() {
-    const fen = this.board.getFEN();
-    const message: ChessMessage = {
-      type: MessageType.MOVE,
-      fen,
-    };
+    if (this.isMyTurn) {
+      const fen = this.board.getFEN();
+      const message: ChessMessage = {
+        type: MessageType.MOVE,
+        fen,
+      };
 
-    this.chessMessageService.sendMessage(window.parent, message);
+      this.chessMessageService.sendMessage(window.parent, message);
+
+      this.isMyTurn = !this.isMyTurn;
+    }
   }
 }

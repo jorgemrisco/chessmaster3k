@@ -21,3 +21,8 @@
   height: 400px;
   box-sizing: border-box; 
 }
+
+.disabled{
+  pointer-events: none;
+  opacity: 0.5;
+}

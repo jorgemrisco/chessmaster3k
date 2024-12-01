@@ -1,17 +1,22 @@
 <div class="mainpage">
   <h1>Chessmaster3k</h1>
   <div class="board-container">
+    <!-- White Board -->
     <iframe
       id="whiteBoard"
       src="/iframepage?isBlack=false"
       frameborder="0"
       class="board"
+      [ngClass]="{ disabled: !isWhiteTurn }"
     ></iframe>
+
+    <!-- Black Board -->
     <iframe
       id="blackBoard"
       src="/iframepage?isBlack=true"
       frameborder="0"
       class="board"
+      [ngClass]="{ disabled: isWhiteTurn }"
     ></iframe>
   </div>
 </div>

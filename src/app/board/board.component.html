@@ -5,4 +5,6 @@
   [darkTileColor]="'#b58863'"
   [lightTileColor]="'#f0d9b5'"
   (moveChange)="onMove()"
+  [darkDisabled]="!isBlack && !isMyTurn"
+  [lightDisabled]="isBlack && !isMyTurn"
 ></ngx-chess-board>

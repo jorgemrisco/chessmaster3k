@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChessMessageService } from '../services/chess-message.service';
-import { ChessMessage, MessageType } from '../board/board.model';
+import { MessageType } from '../services/message.model';
 
 @Component({
   selector: 'app-mainpage',
@@ -10,6 +10,7 @@ import { ChessMessage, MessageType } from '../board/board.model';
 export class MainpageComponent implements OnInit {
   private whiteBoard!: HTMLIFrameElement;
   private blackBoard!: HTMLIFrameElement;
+  isWhiteTurn = true;
 
   constructor(private chessMessageService: ChessMessageService) {}
 
@@ -31,15 +32,22 @@ export class MainpageComponent implements OnInit {
    */
   handleMessage(event: MessageEvent) {
     const message = this.chessMessageService.parseMessage(event);
+    if (message.type === MessageType.MOVE) {
+      const target =
+        event.source === this.whiteBoard?.contentWindow
+          ? this.blackBoard
+          : this.whiteBoard;
 
-    const target =
-      event.source === this.whiteBoard?.contentWindow
-        ? this.blackBoard
-        : this.whiteBoard;
+      this.chessMessageService.sendMessage(target?.contentWindow, {
+        fen: message.fen,
+        type: MessageType.UPDATE,
+      });
 
-    this.chessMessageService.sendMessage(target?.contentWindow, {
-      fen: message.fen,
-      type: MessageType.UPDATE,
-    });
+      this.finishTurn();
+    }
+  }
+
+  private finishTurn() {
+    this.isWhiteTurn = !this.isWhiteTurn;
   }
 }

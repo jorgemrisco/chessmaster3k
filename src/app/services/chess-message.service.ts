@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ChessMessage, MessageType } from '../board/board.model';
+import { ChessMessage, MessageType } from './message.model';
 
 @Injectable({
   providedIn: 'root',
