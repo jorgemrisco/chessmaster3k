@@ -7,11 +7,11 @@ import {
 import { FenParserService } from '../services/fen-parser/fen-parser.service';
 
 @Component({
-  selector: 'app-mainpage',
-  templateUrl: './mainpage.component.html',
-  styleUrls: ['./mainpage.component.scss'],
+  selector: 'local-game',
+  templateUrl: './local-game.component.html',
+  styleUrls: ['./local-game.component.scss'],
 })
-export class MainpageComponent implements OnInit {
+export class LocalGameComponent implements OnInit {
   private whiteBoard!: HTMLIFrameElement;
   private blackBoard!: HTMLIFrameElement;
   customFenButtonInput = '';

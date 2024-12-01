@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MainpageComponent } from './mainpage.component';
+import { LocalGameComponent } from './local-game.component';
 
-describe('MainpageComponent', () => {
-  let component: MainpageComponent;
-  let fixture: ComponentFixture<MainpageComponent>;
+describe('LocalGameComponent', () => {
+  let component: LocalGameComponent;
+  let fixture: ComponentFixture<LocalGameComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MainpageComponent]
+      declarations: [LocalGameComponent],
     });
-    fixture = TestBed.createComponent(MainpageComponent);
+    fixture = TestBed.createComponent(LocalGameComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

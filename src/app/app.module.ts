@@ -3,13 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MainpageComponent } from './mainpage/mainpage.component';
+import { LocalGameComponent } from './local-game/local-game.component';
 import { BoardComponent } from './board/board.component';
 import { NgxChessBoardModule } from 'ngx-chess-board';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent, MainpageComponent, BoardComponent],
+  declarations: [AppComponent, LocalGameComponent, BoardComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
