@@ -12,4 +12,5 @@ export enum MessageType {
 export interface ChessMessage {
   type: MessageType;
   fen: string;
+  isMate?: boolean;
 }

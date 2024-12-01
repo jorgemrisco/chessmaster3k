@@ -6,8 +6,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NgxChessBoardView } from 'ngx-chess-board';
-import { ChessMessage, MessageType } from '../services/message.model';
-import { ChessMessageService } from '../services/chess-message.service';
+import {
+  ChessMessage,
+  MessageType,
+} from '../services/chess-message/message.model';
+import { ChessMessageService } from '../services/chess-message/chess-message.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -64,9 +67,11 @@ export class BoardComponent implements OnInit, AfterViewInit {
   onMove() {
     if (this.isMyTurn) {
       const fen = this.board.getFEN();
+      const moveHistory = this.board.getMoveHistory();
       const message: ChessMessage = {
         type: MessageType.MOVE,
         fen,
+        isMate: moveHistory[moveHistory.length - 1].mate,
       };
 
       this.chessMessageService.sendMessage(window.parent, message);

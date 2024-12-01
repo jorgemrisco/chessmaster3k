@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ChessMessageService } from '../services/chess-message.service';
-import { MessageType } from '../services/message.model';
+import { ChessMessageService } from '../services/chess-message/chess-message.service';
+import {
+  ChessMessage,
+  MessageType,
+} from '../services/chess-message/message.model';
+import { FenParserService } from '../services/fen-parser/fen-parser.service';
 
 @Component({
   selector: 'app-mainpage',
@@ -12,12 +16,14 @@ export class MainpageComponent implements OnInit {
   private blackBoard!: HTMLIFrameElement;
   customFen = '';
   isWhiteTurn = true;
-  private gameStartFen =
-    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
   currentFen = '';
 
-  constructor(private chessMessageService: ChessMessageService) {
-    this.currentFen = this.gameStartFen;
+  constructor(
+    private chessMessageService: ChessMessageService,
+    private fenParserService: FenParserService
+  ) {
+    this.currentFen = this.fenParserService.GAME_START_FEN;
   }
 
   ngOnInit(): void {
@@ -50,7 +56,9 @@ export class MainpageComponent implements OnInit {
       });
 
       this.currentFen = message.fen;
-      this.finishTurn();
+      if (!this.checkForMate(message)) {
+        this.finishTurn();
+      }
     }
   }
 
@@ -58,22 +66,34 @@ export class MainpageComponent implements OnInit {
     this.isWhiteTurn = !this.isWhiteTurn;
   }
 
+  private checkForMate(message: ChessMessage): boolean {
+    if (message.isMate) {
+      const winner = this.isWhiteTurn ? 'White' : 'Black';
+      alert(`Checkmate! ${winner} won.`);
+      this.resetGame();
+
+      return true;
+    }
+
+    return false;
+  }
+
   resetGame() {
     this.chessMessageService.sendMessage(this.whiteBoard?.contentWindow, {
       type: MessageType.UPDATE,
-      fen: this.gameStartFen,
+      fen: this.fenParserService.GAME_START_FEN,
     });
 
     this.chessMessageService.sendMessage(this.blackBoard?.contentWindow, {
       type: MessageType.UPDATE,
-      fen: this.gameStartFen,
+      fen: this.fenParserService.GAME_START_FEN,
     });
 
-    this.currentFen = this.gameStartFen;
+    this.currentFen = this.fenParserService.GAME_START_FEN;
   }
 
   setCustomFEN(): void {
-    if (this.isValidFEN(this.customFen)) {
+    if (this.fenParserService.isValidFEN(this.customFen)) {
       // Send the FEN to both boards
       this.whiteBoard?.contentWindow?.postMessage(
         { type: 'UPDATE', fen: this.customFen },
@@ -87,59 +107,5 @@ export class MainpageComponent implements OnInit {
     } else {
       alert('Invalid FEN. Please enter a valid FEN string.');
     }
-  }
-
-  isValidFEN(fen: string): boolean {
-    const parts = fen.split(' ');
-
-    // 1. Check the number of fields
-    if (parts.length !== 6) return false;
-
-    const [
-      position,
-      activeColor,
-      castling,
-      enPassant,
-      halfmoveClock,
-      fullmoveNumber,
-    ] = parts;
-
-    // 2. Validate piece placement
-    const rows = position.split('/');
-    if (rows.length !== 8) return false;
-
-    for (const row of rows) {
-      let squareCount = 0;
-
-      for (const char of row) {
-        if ('12345678'.includes(char)) {
-          squareCount += parseInt(char, 10);
-        } else if ('rnbqkpRNBQKP'.includes(char)) {
-          squareCount += 1;
-        } else {
-          return false; // Invalid character
-        }
-      }
-
-      if (squareCount !== 8) return false; // Each row must have exactly 8 squares
-    }
-
-    // 3. Validate active color
-    if (!['w', 'b'].includes(activeColor)) return false;
-
-    // 4. Validate castling availability
-    if (!/^[KQkq\-]+$/.test(castling)) return false;
-
-    // 5. Validate en passant target
-    if (!/^(-|[a-h][36])$/.test(enPassant)) return false;
-
-    // 6. Validate halfmove clock
-    if (isNaN(Number(halfmoveClock)) || Number(halfmoveClock) < 0) return false;
-
-    // 7. Validate fullmove number
-    if (isNaN(Number(fullmoveNumber)) || Number(fullmoveNumber) <= 0)
-      return false;
-
-    return true;
   }
 }
