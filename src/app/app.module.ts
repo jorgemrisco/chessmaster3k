@@ -7,9 +7,11 @@ import { LocalGameComponent } from './local-game/local-game.component';
 import { BoardComponent } from './board/board.component';
 import { NgxChessBoardModule } from 'ngx-chess-board';
 import { FormsModule } from '@angular/forms';
+import { OnlineGameComponent } from './online-game/online-game.component';
+import { MenuBarComponent } from './menu-bar/menu-bar.component';
 
 @NgModule({
-  declarations: [AppComponent, LocalGameComponent, BoardComponent],
+  declarations: [AppComponent, LocalGameComponent, BoardComponent, OnlineGameComponent, MenuBarComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
