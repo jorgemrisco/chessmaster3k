@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   Input,
   OnInit,
@@ -26,7 +27,8 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
   constructor(
     private chessMessageService: ChessMessageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -41,6 +43,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
     if (this.isBlack) {
       this.isMyTurn = false;
       this.board.reverse();
+      this.cdr.detectChanges();
     }
   }
 

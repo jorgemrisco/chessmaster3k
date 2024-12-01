@@ -4,7 +4,7 @@ import { LocalGameComponent } from './local-game.component';
 import { FormsModule } from '@angular/forms';
 import { MessageType } from '../services/chess-message/message.model';
 
-fdescribe('LocalGameComponent', () => {
+describe('LocalGameComponent', () => {
   const GAME_START_FEN =
     'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
   let component: LocalGameComponent;
