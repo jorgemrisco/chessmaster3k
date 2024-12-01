@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ChessMessageService } from '../services/chess-message/chess-message.service';
 import {
   ChessMessage,
@@ -14,7 +14,7 @@ import { FenParserService } from '../services/fen-parser/fen-parser.service';
 export class MainpageComponent implements OnInit {
   private whiteBoard!: HTMLIFrameElement;
   private blackBoard!: HTMLIFrameElement;
-  customFen = '';
+  customFenButtonInput = '';
   isWhiteTurn = true;
 
   currentFen = '';
@@ -22,17 +22,19 @@ export class MainpageComponent implements OnInit {
   constructor(
     private chessMessageService: ChessMessageService,
     private fenParserService: FenParserService
-  ) {
-    this.currentFen = this.fenParserService.GAME_START_FEN;
-  }
+  ) {}
 
   ngOnInit(): void {
+    this.currentFen = this.getStartingFen();
     this.whiteBoard = document.getElementById(
       'whiteBoard'
     ) as HTMLIFrameElement;
     this.blackBoard = document.getElementById(
       'blackBoard'
     ) as HTMLIFrameElement;
+
+    // Attach load event listeners
+    this.restoreSavedGame();
 
     // Listen for messages from the iframes
     window.addEventListener('message', this.handleMessage.bind(this));
@@ -56,10 +58,57 @@ export class MainpageComponent implements OnInit {
       });
 
       this.currentFen = message.fen;
+      this.saveGameState(this.currentFen);
       if (!this.checkForMate(message)) {
         this.finishTurn();
       }
     }
+  }
+
+  resetGame() {
+    this.chessMessageService.sendMessage(this.whiteBoard?.contentWindow, {
+      type: MessageType.UPDATE,
+      fen: this.fenParserService.GAME_START_FEN,
+    });
+
+    this.chessMessageService.sendMessage(this.blackBoard?.contentWindow, {
+      type: MessageType.UPDATE,
+      fen: this.fenParserService.GAME_START_FEN,
+    });
+
+    this.currentFen = this.fenParserService.GAME_START_FEN;
+    this.clearGameState();
+  }
+
+  setCustomFEN(fen?: string): void {
+    if (this.fenParserService.isValidFEN(fen ?? this.customFenButtonInput)) {
+      // Send the FEN to both boards
+      this.whiteBoard?.contentWindow?.postMessage(
+        { type: 'UPDATE', fen: fen ?? this.customFenButtonInput },
+        '*'
+      );
+      this.blackBoard?.contentWindow?.postMessage(
+        { type: 'UPDATE', fen: fen ?? this.customFenButtonInput },
+        '*'
+      );
+    } else {
+      alert('Invalid FEN. Please enter a valid FEN string.');
+    }
+  }
+
+  private saveGameState(fen: string) {
+    localStorage.setItem('gameState', fen);
+  }
+
+  private getStartingFen(): string {
+    const localStorageFen = localStorage.getItem('gameState');
+    return localStorageFen
+      ? localStorageFen
+      : this.fenParserService.GAME_START_FEN;
+  }
+
+  private clearGameState() {
+    localStorage.removeItem('gameState');
   }
 
   private finishTurn() {
@@ -78,34 +127,11 @@ export class MainpageComponent implements OnInit {
     return false;
   }
 
-  resetGame() {
-    this.chessMessageService.sendMessage(this.whiteBoard?.contentWindow, {
-      type: MessageType.UPDATE,
-      fen: this.fenParserService.GAME_START_FEN,
-    });
-
-    this.chessMessageService.sendMessage(this.blackBoard?.contentWindow, {
-      type: MessageType.UPDATE,
-      fen: this.fenParserService.GAME_START_FEN,
-    });
-
-    this.currentFen = this.fenParserService.GAME_START_FEN;
-  }
-
-  setCustomFEN(): void {
-    if (this.fenParserService.isValidFEN(this.customFen)) {
-      // Send the FEN to both boards
-      this.whiteBoard?.contentWindow?.postMessage(
-        { type: 'UPDATE', fen: this.customFen },
-        '*'
-      );
-      this.blackBoard?.contentWindow?.postMessage(
-        { type: 'UPDATE', fen: this.customFen },
-        '*'
-      );
-      console.log('Custom FEN set:', this.customFen);
-    } else {
-      alert('Invalid FEN. Please enter a valid FEN string.');
-    }
+  private restoreSavedGame() {
+    this.whiteBoard?.addEventListener('load', () =>
+      this.blackBoard?.addEventListener('load', () =>
+        this.setCustomFEN(this.currentFen)
+      )
+    );
   }
 }
