@@ -1,2 +1,54 @@
 <app-menu-bar></app-menu-bar>
-<p>online-game works!</p>
+<div class="game-container">
+  <h1>Online Chess Game</h1>
+
+  <!-- Game creation form -->
+  <div *ngIf="!isGameCreated">
+    <h3>Create a New Game</h3>
+    <input type="text" [(ngModel)]="playerName" placeholder="Enter your name" />
+    <button (click)="createGame()">Create Game</button>
+  </div>
+
+  <!-- Game details and joining -->
+  <div *ngIf="isGameCreated">
+    <h3>Game Created</h3>
+    <p>Game Code: {{ gameCode }}</p>
+    <p>Share this code with your friend!</p>
+  </div>
+
+  <!-- Join game form -->
+  <div *ngIf="!isGameCreated">
+    <h3>Join an Existing Game</h3>
+    <input type="text" [(ngModel)]="playerName" placeholder="Enter your name" />
+    <input type="text" [(ngModel)]="gameCode" placeholder="Enter game code" />
+    <button (click)="joinGame()">Join Game</button>
+  </div>
+
+  <!-- Display game details and iframe for the chessboard -->
+  <div *ngIf="gameData.gameCode">
+    <h3>Game Details</h3>
+    <p>Player 1: {{ gameData.players.white}}</p>
+    <p>Player 2: {{ gameData.players.black }}</p>
+
+    <!-- Iframe for the chessboard -->
+    <div *ngIf="gameCode && isBlack">
+      <iframe
+        #boardIframe
+        src="/iframepage?isBlack=true"
+        width="600"
+        height="600"
+        frameborder="0"
+      ></iframe>
+    </div>
+
+   <div *ngIf="gameCode && !isBlack">
+      <iframe
+        #boardIframe
+        src="/iframepage?isBlack=false"
+        width="600"
+        height="600"
+        frameborder="0"
+      ></iframe>
+    </div>
+  </div>
+</div>

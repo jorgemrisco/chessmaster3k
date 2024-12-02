@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
+import {
+  AngularFireDatabase,
+  AngularFireObject,
+} from '@angular/fire/compat/database';
+import { Observable } from 'rxjs';
 import * as uuid from 'uuid';
+import { GameData } from './multiplayer.model';
 @Injectable({
   providedIn: 'root',
 })
@@ -8,30 +13,35 @@ export class MultiplayerService {
   constructor(private db: AngularFireDatabase) {}
 
   createGame(playerName: string) {
-    const player1 = playerName;
-    const player2 = 'black';
+    const white = playerName;
+    const black = 'black';
     const gameCode = this.generateGameCode();
-    const gameRef = this.db.object('games/' + gameCode);
+    const gameRef: AngularFireObject<GameData> = this.db.object(
+      'games/' + gameCode
+    );
 
     gameRef.set({
       players: {
-        player1,
-        player2,
+        white,
+        black,
       },
       boardState: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', // Default start state (FEN)
-      gameStatus: 'ongoing',
+      gameStatus: 'ONGOING',
       gameCode,
     });
 
-    return gameCode;
+    return gameRef.valueChanges();
   }
 
-  async joinGame(gamecode: string, playerName: string): Promise<any> {
-    const gameRef = this.db.object('games/' + gamecode);
+  async joinGame(gamecode: string, playerName: string) {
+    const gameRef: AngularFireObject<GameData> = this.db.object(
+      'games/' + gamecode
+    );
 
-    await gameRef.update({
-      players: { player2: playerName },
-      gameStatus: 'ongoing',
+    gameRef.valueChanges().subscribe(async (game) => {
+      await gameRef.update(<Partial<GameData>>{
+        players: { black: playerName, white: game?.players.white },
+      });
     });
 
     return gameRef.valueChanges();
@@ -41,8 +51,22 @@ export class MultiplayerService {
     return uuid.v7();
   }
 
-  listenToGameState(gameCode: string) {
-    const gameRef = this.db.object('games/' + gameCode);
+  getGameInfo(gameCode: string): Observable<GameData | null> {
+    const gameRef: AngularFireObject<GameData> = this.db.object(
+      'games/' + gameCode
+    );
+
+    return gameRef.valueChanges();
+  }
+
+  async updateFen(fen: string, gamecode: string) {
+    const gameRef: AngularFireObject<GameData> = this.db.object(
+      'games/' + gamecode
+    );
+
+    await gameRef.update(<Partial<GameData>>{
+      boardState: fen,
+    });
 
     return gameRef.valueChanges();
   }

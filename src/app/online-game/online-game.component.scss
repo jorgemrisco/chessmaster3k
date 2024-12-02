@@ -1,0 +1,14 @@
+.game-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  text-align: center; 
+}
+
+iframe {
+  height: 400px;
+  width: 400px;
+  border: none;
+}
