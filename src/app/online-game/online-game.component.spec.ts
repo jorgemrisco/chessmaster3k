@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OnlineGameComponent } from './online-game.component';
+import { MenuBarComponent } from '../menu-bar/menu-bar.component';
 
 describe('OnlineGameComponent', () => {
   let component: OnlineGameComponent;
@@ -8,7 +9,7 @@ describe('OnlineGameComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [OnlineGameComponent]
+      declarations: [OnlineGameComponent, MenuBarComponent],
     });
     fixture = TestBed.createComponent(OnlineGameComponent);
     component = fixture.componentInstance;

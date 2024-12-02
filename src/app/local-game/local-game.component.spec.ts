@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LocalGameComponent } from './local-game.component';
 import { FormsModule } from '@angular/forms';
 import { MessageType } from '../services/chess-message/message.model';
+import { MenuBarComponent } from '../menu-bar/menu-bar.component';
 
 describe('LocalGameComponent', () => {
   const GAME_START_FEN =
@@ -12,7 +13,7 @@ describe('LocalGameComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [LocalGameComponent],
+      declarations: [LocalGameComponent, MenuBarComponent],
       imports: [FormsModule],
     });
 
