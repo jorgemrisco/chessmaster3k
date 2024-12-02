@@ -10,7 +10,7 @@ export class MenuBarComponent {
   constructor(private router: Router) {}
 
   navigateToLocalGame() {
-    this.router.navigate(['/local-game']);
+    this.router.navigate(['/mainpage']);
   }
 
   navigateToOnlineGame() {
