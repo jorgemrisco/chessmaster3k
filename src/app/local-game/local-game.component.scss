@@ -44,3 +44,19 @@ button:hover {
   background-color: #007bff;
   color: #fff;
 }
+
+@media (max-width: 600px) {
+  .board-container {
+    flex-direction: column; /* Stack boards vertically */
+    gap: 10px; /* Reduce gap for smaller screens */
+  }
+
+  .fen-input-container {
+    gap: 4px; /* Minimize spacing on smaller screens */
+  }
+
+  button {
+    font-size: 12px; /* Slightly reduce font size for buttons */
+    padding: 6px 12px;
+  }
+}
