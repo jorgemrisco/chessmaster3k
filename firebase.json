@@ -1,9 +1,24 @@
 {
   "hosting": {
     "public": "dist/chessmaster3k",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
-  },
-  "database": {
-    "rules": "database.rules.json"
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "/iframepage",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/mainpage",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/online-game",
+        "destination": "/index.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   }
 }
